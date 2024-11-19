@@ -1,5 +1,5 @@
 <?php
-include_once 'DBConnect.php';
+require_once __DIR__ . '/../DBConnect.php';
 class News{
     private $db;
 

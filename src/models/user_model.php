@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../DBConnect.php';
+
 /**
  * User model
  * This class contains methods for user authentication and management
