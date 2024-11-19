@@ -9,7 +9,7 @@ class News{
     
     public function getNews(){
         $conn = $this->db->getConnection();
-        $query = "SELECT * FROM news";
+        $query = "SELECT news.*  FROM news JOIN USERS ON news.N_author = users.U_id";
         $result = $conn->query($query);
         $news = [];
         if($result->num_rows > 0){
