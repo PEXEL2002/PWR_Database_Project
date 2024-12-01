@@ -1,19 +1,26 @@
 <?php
-require_once __DIR__ . '/../DBConnect.php';
+require_once  realpath(__DIR__ . '/../DBConect.php');
 class News{
+    private $dbConect;
     private $db;
-
     public function  __construct(){
-        $this->db = new Database();
+        $this->dbConect = new Database();
+        $this->db = $this->dbConect->getConnection();
     }
     
     public function getNews(){
-        $conn = $this->db->getConnection();
-        $query = "SELECT news.*  FROM news JOIN USERS ON news.N_author = users.U_id";
+        $conn = $this->db;
+
+        // Sprawdź połączenie
+        if (!$conn) {
+            die("Połączenie z bazą danych jest zamknięte lub nie istnieje.");
+        }
+    
+        $query = "SELECT news.*,users.U_name FROM news JOIN USERs ON news.N_creator = users.U_id";
         $result = $conn->query($query);
         $news = [];
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
                 $news[] = $row;
             }
         }
@@ -27,7 +34,7 @@ class News{
         if(!isset($_POST['image'])){
             $_POST['image'] = '';
         }
-        $conn = $this->db->getConnection();
+        $conn = $this->db;
         $query = "INSERT INTO news (N_title, N_content, N_image) VALUES (?, ?, ?)";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("sss", $_POST['title'], $_POST['content'], $_POST['image']);
