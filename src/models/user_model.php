@@ -31,7 +31,7 @@ class User {
 
         // Prepare the query
         $conn = $this->db->getConnection();
-        $query = "SELECT 'U_id','U_name','U_surname','U_mail', 'U_role' FROM users WHERE U_mail = ? AND U_password = ?";
+        $query = "SELECT U_id,U_name,U_surname,U_mail, U_role FROM users WHERE U_mail = ? AND U_password = ?";
 
         $stmt = $conn->prepare($query);
         $stmt->bind_param("ss", $mail, $hashedPassword);
@@ -42,13 +42,76 @@ class User {
         $user = $result->fetch_assoc();
 
         if ($user) {
-            $_SESSION['user'] = $user; 
-            return $user;
+            $this->id = $user['U_id'];
+            $this->name = $user['U_name'];
+            $this->surname = $user['U_surname'];
+            $this->email = $user['U_mail'];
+            $this->role = $user['U_role'];
+            return true;
         } else {
             return false;
         }
     }
-
+    public function getId(){
+        return $this->id;
+    }
+    public function getRole(){
+        return $this->role;
+    }
+    public function getInfo(){
+        return [
+            'name' => $this->name,
+            'surname' => $this->surname,
+            'email' => $this->email,
+        ];
+    }
+    public function updateName($newName){
+        $conn = $this->db->getConnection();
+        $query = "UPDATE users SET U_name = ? WHERE U_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("si", $newName, $this->id);
+        $this->name = $newName;
+        $_SESSION['user'] = $this;
+        return $stmt->execute();
+    }
+    public function updateSurname($newSurname){
+        $conn = $this->db->getConnection();
+        $query = "UPDATE users SET U_surname = ? WHERE U_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("si", $newSurname, $this->id);
+        $this->surname = $newSurname;
+        $_SESSION['user'] = $this;
+        return $stmt->execute();
+    }
+    public function updateEmail($newEmail){
+        $conn = $this->db->getConnection();
+        $query = "UPDATE users SET U_mail = ? WHERE U_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("si", $newEmail, $this->id);
+        $this->email = $newEmail;
+        $_SESSION['user'] = $this;
+        return $stmt->execute();
+    }
+    public function getPassword(){
+        $conn = $this->db->getConnection();
+        $query = "SELECT U_password FROM users WHERE U_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $this->id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $password = $result->fetch_assoc();
+        $_SESSION['user'] = $this;
+        return $password['U_password'];
+    }
+    public function updatePassword($newPassword){
+        $conn = $this->db->getConnection();
+        $hashedPassword = md5($newPassword);
+        $query = "UPDATE users SET U_password = ? WHERE U_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("si", $hashedPassword, $this->id);
+        $_SESSION['user'] = $this;
+        return $stmt->execute();
+    }
     /**
      * Register user
      * @return bool - True if registration is successful, false otherwise
@@ -79,24 +142,6 @@ class User {
 
         // Execute the query
         return $stmt->execute();
-    }
-
-    /**
-     * logout user
-     * @return void
-     */
-    public function logout() {
-        session_destroy();
-        session_start();
-        session_unset();
-        header("Location: index.php");
-    }
-
-    /**
-     * Destructor - close the database connection
-     */
-    public function __destruct(){
-        $this->db->getConnection()->close();
     }
 }
 ?>

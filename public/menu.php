@@ -18,7 +18,7 @@
             <li><a href="#">Kontakt</a></li>
             <?php
                 if (isset($_SESSION['user'])) {
-                    if($_SESSION['user']['U_role'] == 1) {
+                    if($_SESSION['user']->getRole() == 1) {
                         echo "<li><a href='adminPanel.php'>Panel administratora</a></li>";
                     }else{
                         echo "<li><a href='userInfo.php'>Informacje o koncie</a></li>";

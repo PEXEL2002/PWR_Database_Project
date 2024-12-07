@@ -21,13 +21,8 @@ class Database {
      * @return mysqli
      */
     public function getConnection() {
+        $this->conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         return $this->conn;
     }
-    /**
-     * Close database connection
-     */
-    #public function __destruct() {
-    #    $this->conn->close();
-    #}
 }
 ?>

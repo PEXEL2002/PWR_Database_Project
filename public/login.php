@@ -25,7 +25,6 @@
                   require_once __DIR__ .'/../src/models/user_model.php';
                   $_SESSION['user'] = new User();
                   $test = $_SESSION['user']->login($_POST['email'], $_POST['password']);
-                  echo $_SESSION['user']['U_password'];
                   if($test == false){
                       echo '<p style="color:red">Niepoprawne dane logowania.</p>';
                   }else{
