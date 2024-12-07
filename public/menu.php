@@ -18,7 +18,11 @@
             <li><a href="#">Kontakt</a></li>
             <?php
                 if (isset($_SESSION['user'])) {
-                    echo "<li><a href='userInfo.php'>Informacje o koncie</a></li>";
+                    if($_SESSION['user']['U_role'] == 1) {
+                        echo "<li><a href='adminPanel.php'>Panel administratora</a></li>";
+                    }else{
+                        echo "<li><a href='userInfo.php'>Informacje o koncie</a></li>";
+                    }
                     echo "<li><a href='logout.php'>Wyloguj</a></li>";
                 } else {
                     echo "<li><a href='login.php'>Zaloguj</a></li>";

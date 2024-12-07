@@ -111,7 +111,7 @@ nav.menu {
         align-items: center;
         gap: 1em;
         transition: none;
-        margin-right: 3em;
+        margin-right: 10vw;
     }
 
     #side-menu ul {
@@ -128,4 +128,9 @@ nav.menu {
     #close {
         display: none;
     }
+}
+.error{
+    color: red;
+    font-size: 0.75em;
+    margin: 0;
 }

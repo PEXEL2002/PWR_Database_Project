@@ -26,8 +26,8 @@ class Database {
     /**
      * Close database connection
      */
-    public function __destruct() {
-        $this->conn->close();
-    }
+    #public function __destruct() {
+    #    $this->conn->close();
+    #}
 }
 ?>

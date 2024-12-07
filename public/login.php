@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<?php session_start(); ?>
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,18 +19,34 @@
           <div class="login-box">
             <p class="title">Logowanie</p>
               <div id="login-inputs">
-                <div class="txtbox">
-                  <input type="text" placeholder="Nazwa użytkownika" name="" value="">
-                </div>
-                <div class="txtbox">
-                  <input type="password" placeholder="Hasło" name="" value="">
-                </div>
-                <input class="bnt" type="button" name="" value="Zaloguj">
-              </div>
-              <div class="register-link">
-                <a href="#">Nie pamiętasz hasła? (Będzie jak zrobie resztę)</a>
-                <p>Nie masz konta? <a href="register.php">Zarejestruj się</a></p>
-              </div>
+                <?php
+                  if(isset($_POST['email']) && isset($_POST['password'])
+                  && !empty($_POST['email']) && !empty($_POST['password'])){
+                  require_once __DIR__ .'/../src/models/user_model.php';
+                  $_SESSION['user'] = new User();
+                  $test = $_SESSION['user']->login($_POST['email'], $_POST['password']);
+                  echo $_SESSION['user']['U_password'];
+                  if($test == false){
+                      echo '<p style="color:red">Niepoprawne dane logowania.</p>';
+                  }else{
+                      header("Location: main.php");
+                  }
+              }
+                ?>
+                <form action="login.php" method="post">
+                  <div class="txtbox">
+                    <input type="text" placeholder="E-Mail" name="email" value="">
+                  </div>
+                  <div class="txtbox">
+                    <input type="password" placeholder="Hasło" name="password" value="">
+                  </div>
+                  <input class="bnt" type="submit" name="" value="Zaloguj">
+                  </div>
+                  <div class="register-link">
+                    <a href="#">Nie pamiętasz hasła? (Będzie jak zrobie resztę)</a>
+                    <p>Nie masz konta? <a href="register.php">Zarejestruj się</a></p>
+                  </div>
+              </form>
           </div>
         </section>
         <div class="vertical-line"></div>
