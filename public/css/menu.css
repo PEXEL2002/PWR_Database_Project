@@ -101,9 +101,7 @@ nav.menu {
     width: 2em;
     height: 2em;
 }
-
-/* Media Query: Normalny widok powyżej 700px */
-@media (min-width: 700px) {
+@media (min-width: 800px) {
     #side-menu {
         position: static;
         height: auto;
