@@ -103,7 +103,9 @@ if (isset($_POST['oldPassword']) && isset($_POST['newPassword']) && isset($_POST
         <div class="line"></div>
         <section id='history-order'>
             <h1>Historia zamówień </h1>
-            <div class='order-item'></div>
+            <div class='order-items'>
+                do zrobienia po panelu admina
+            </div>
         </section>
 
     </main>

@@ -4,6 +4,7 @@ main{
     justify-content: center;
     align-items: center;
     width: 100vw;
+    height: auto;
 }
 
 /* Ogólny układ formularza */
@@ -84,14 +85,32 @@ input[type="submit"]:hover {
 }
 
 .line{
-    display: bold;
+    display: block;
     width: 70%;
     height: 0.1em;
     background-color: #344966;
+    margin: 10px;
+    padding: auto;
 }
 
 h1 #history-order{
     font-family: 'JainiPurva', sans-serif;;
-    font-size: 2em;
+    font-size: 3em;
     color: #344966;
+}
+
+@media (min-width: 800px) {
+    main{
+        flex-direction: row;    
+        width: auto;
+        height: 85vh;
+    }
+    form {
+        width: 50%;
+    }
+    .line{
+        width: 0.1em;
+        height: 70%;
+    }
+
 }
