@@ -1,0 +1,66 @@
+body{
+    margin: 0;
+    padding: 0;
+}
+@font-face {
+    font-family: 'JainiPurva';
+    src: url('/public/assets/fonts/JainiPurva.ttf') format('truetype');
+}
+#content{
+    margin: 1em;
+}
+.login-box{
+    margin: 5em;
+}
+p{
+    font-family: 'JainiPurva', sans-serif;
+    font-size: 2.5em;
+}
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    width: 100vw;
+}
+.txtbox input{
+    font-size: 1.25em;
+    padding: 0.5em;
+    border: none;
+    font-size: 1.0em;
+    border-bottom: 0.2em solid #344966;
+    margin:10px;
+}
+.register-link p{
+    font-size: 1.5em;
+}
+.register-link a{
+    color: #B4CDED;
+}
+.bnt{
+    padding: 0.25em 1em;
+    font-size: 1.25em;
+}
+#login-inputs{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.vertical-line{
+    display: none;
+    height: 75%;
+    width: 0.1em;
+    background-color: #344966;
+}
+main img{
+    display: none;
+    height: 75%;
+    width: auto;
+}
+
+@media (min-width: 800px){
+    .vertical-line, main img{
+        display: block;
+    }
+}

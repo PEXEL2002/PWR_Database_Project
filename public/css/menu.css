@@ -41,10 +41,10 @@ nav.menu {
 }
 
 #content {
-    margin-right:2.5em;
+    height: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    padding-right: 3em;
     cursor: pointer;
 }
 
@@ -56,14 +56,13 @@ nav.menu {
     position: fixed;
     top: 0;
     left: -100vw;
-    height: 100vh;
+    height:90vh;
     width: 100vw;
     background-color: #E0EEA5;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1em;
     transition: left 0.3s ease-in-out;
 }
 
@@ -95,6 +94,7 @@ nav.menu {
     top: 1em;
     right: 1em;
     cursor: pointer;
+    z-index: 1001;
 }
 
 #close img {
