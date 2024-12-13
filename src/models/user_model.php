@@ -5,7 +5,7 @@ require_once realpath(__DIR__ . '/../DBConect.php');
  * This class contains methods for user authentication and management
  */
 class User {
-    private $db;
+    protected  $db;
     private $id;
     private $name;
     private $surname;
