@@ -14,7 +14,7 @@ $infoUser = $_SESSION['user']->getInfo();
 if (isset($_POST['name']) && !empty($_POST['name'])) {
     if ($_POST['name'] != $infoUser['name']) {
         $_SESSION['user']->updateName($_POST['name']);
-        $infoUser['name'] = $_POST['name']; // Aktualizacja zmiennej
+        $infoUser['name'] = $_POST['name'];
         $messages['name'] = '<p class="success">Zmieniono imię</p>';
     }
 }
@@ -22,7 +22,7 @@ if (isset($_POST['name']) && !empty($_POST['name'])) {
 if (isset($_POST['surname']) && !empty($_POST['surname'])) {
     if ($_POST['surname'] != $infoUser['surname']) {
         $_SESSION['user']->updateSurname($_POST['surname']);
-        $infoUser['surname'] = $_POST['surname']; // Aktualizacja zmiennej
+        $infoUser['surname'] = $_POST['surname'];
         $messages['surname'] = '<p class="success">Zmieniono nazwisko</p>';
     }
 }
@@ -30,7 +30,7 @@ if (isset($_POST['surname']) && !empty($_POST['surname'])) {
 if (isset($_POST['email']) && !empty($_POST['email'])) {
     if ($_POST['email'] != $infoUser['email']) {
         $_SESSION['user']->updateEmail($_POST['email']);
-        $infoUser['email'] = $_POST['email']; // Aktualizacja zmiennej
+        $infoUser['email'] = $_POST['email'];
         $messages['email'] = '<p class="success">Zmieniono email</p>';
     }
 }

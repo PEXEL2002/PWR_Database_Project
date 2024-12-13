@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<?php session_start(); ?>
+<?php 
+require_once __DIR__ .'/../src/models/user_model.php';
+session_start(); ?>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">

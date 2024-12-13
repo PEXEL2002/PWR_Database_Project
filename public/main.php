@@ -1,6 +1,7 @@
 <?php
     require_once __DIR__ . '/../src/models/news_model.php';
-
+    require_once __DIR__ . '/../src/models/user_model.php';
+    session_start();
     $newsModel = new News();
     $newsList = $newsModel->getNews();
 ?>
@@ -13,7 +14,9 @@
     <link rel="stylesheet" href="css/menu.css">
 </head>
 <body>
-    <div id="menu">
+    <?php
+        include __DIR__ . '/menu.php';
+    ?>
     </div>
     <main>
         <?php
