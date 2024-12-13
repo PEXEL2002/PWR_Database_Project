@@ -49,46 +49,7 @@ class Admin extends User{
         $stmt->execute();
         return true;
     }
-    public function addBissnes($contact,$nip,$name,$photo){
-        $conn = $this->db->getConnection();
-        $query = "INSERT INTO buisness (B_contact, B_nip, B_name, B_photo) VALUES (?, ?, ?, ?)";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("ssss", $_POST['contact'], $_POST['nip'], $_POST['name'], $_POST['photo']);
-        $stmt->execute();
-        return true;
-    }
-    public function deleteBissnes($id){
-        $conn = $this->db->getConnection();
-        $query = "DELETE FROM buisness WHERE B_id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        return true;
-    }
-    public function editBissnes($id, $contact, $nip, $name, $photo){
-        $conn = $this->db->getConnection();
-        $query = "UPDATE buisness SET B_contact = ?, B_nip = ?, B_name = ?, B_photo = ? WHERE B_id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("ssssi", $contact, $nip, $name, $photo, $id);
-        $stmt->execute();
-        return true;
-    }
-    public function addEquipment($producer,$category,$size){
-        $conn = $this->db->getConnection();
-        $query = "INSERT INTO equipment (E_name, E_photo) VALUES (?, ?)";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("ss", $_POST['name'], $_POST['photo']);
-        $stmt->execute();
-        return true;
-    }
-    public function deleteEquipment($id){
-        $conn = $this->db->getConnection();
-        $query = "DELETE FROM equipment WHERE E_id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        return true;
-    }
+    // Obsługa przesyłania formularza zmiany cen serwisu oraz sprzętu
     public function editPrice($equipmentName, $newPrice) {
         $conn = $this->db->getConnection();
         $newPrice = floatval($newPrice);
@@ -218,5 +179,83 @@ class Admin extends User{
         $stmt->bind_param("di", $newPrice, $equipmentId);
         $stmt->execute();
     }
+    // Obsługa przesyłania formularza dodania firmy
+    public function addBusiness($name, $contact, $nip, $photoPath) {
+        $conn = $this->db->getConnection();
+        $query = "INSERT INTO business (B_name, B_contact, B_nip, B_photo) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ssss", $name, $contact, $nip, $photoPath);
+        $stmt->execute();
+    }
+    public function getAllBusinesses() {
+        $conn = $this->db->getConnection();
+        $query = "SELECT * FROM business";
+        $result = $conn->query($query);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    public function editBusiness($id, $name, $contact, $nip, $photoPath = null) {
+        $conn = $this->db->getConnection();
+    
+        if ($photoPath) {
+            $query = "UPDATE business SET B_name = ?, B_contact = ?, B_nip = ?, B_photo = ? WHERE B_id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ssssi", $name, $contact, $nip, $photoPath, $id);
+        } else {
+            $query = "UPDATE business SET B_name = ?, B_contact = ?, B_nip = ? WHERE B_id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("sssi", $name, $contact, $nip, $id);
+        }
+    
+        $stmt->execute();
+    }
+    public function deleteBusiness($id) {
+        $conn = $this->db->getConnection();
+    
+        // Pobierz ścieżkę do zdjęcia
+        $query = "SELECT B_photo FROM business WHERE B_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $business = $result->fetch_assoc();
+    
+        if ($business && file_exists(__DIR__ . "/../../assets/businessPhoto/" . $business['B_photo'])) {
+            unlink(__DIR__ . "/../../assets/businessPhoto/" . $business['B_photo']); // Usuń zdjęcie
+        }
+    
+        // Usuń firmę z bazy danych
+        $query = "DELETE FROM business WHERE B_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+    }
+    public function getBusinessById($id) {
+        $conn = $this->db->getConnection();
+        $query = "SELECT * FROM business WHERE B_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
+    public function isNipUnique($nip, $excludeId = null) {
+        $conn = $this->db->getConnection();
+    
+        if ($excludeId) {
+            $query = "SELECT COUNT(*) AS count FROM business WHERE B_nip = ? AND B_id != ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("si", $nip, $excludeId);
+        } else {
+            $query = "SELECT COUNT(*) AS count FROM business WHERE B_nip = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("s", $nip);
+        }
+    
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['count'] == 0;
+    }
+    
 }
 ?>

@@ -66,6 +66,7 @@
         <div id="main_operation">
             <a href="panel_user.php"><div class = "go_to">Użytkownicy</div></a>
             <a href="panel_equipment.php"><div class = "go_to">Sprzęt</div></a>
+            <a href="panel_biznes.php"><div class = "go_to">Firmy</div></a>
             <a href="panel_servises.php"><div class = "go_to">Serwis</div></a>
             <a href="panel_prices.php"><div class = "go_to">Cennik</div></a>
         </div>
