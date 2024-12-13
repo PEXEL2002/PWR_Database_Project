@@ -134,5 +134,89 @@ class Admin extends User{
         $success = $stmt->execute();
         return true;
     }
+    /* fukcje do obsługi serwisu */
+    /**
+     * Pobranie listy operacji serwisowych
+     * @return array
+     */
+    public function getServiceOperations(){
+        $conn = $this->db->getConnection();
+        $query = "SELECT SP_id, SP_service, SP_price FROM service_price";
+        $result = $conn->query($query);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    /**
+     * Pobranie listy rekordów serwisowych
+     * @return array
+     */
+    public function getServiceRecords(){
+        $conn = $this->db->getConnection();
+        $query = "SELECT 
+                    s.S_id, 
+                    u.U_name, 
+                    u.U_surname, 
+                    sp.SP_service, 
+                    sp.SP_price, 
+                    s.S_date_in, 
+                    s.S_status 
+                  FROM service s
+                  JOIN users u ON s.S_user = u.U_id
+                  JOIN service_price sp ON s.S_price = sp.SP_id
+                  WHERE s.S_status != 'Wydany'";
+        $result = $conn->query($query);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    /**
+     * Dodanie nowego zgłoszenia serwisowego
+     * @param int $userId
+     * @param int $operationId
+     * @return void
+     */
+    public function addServiceRecord($userId, $operationId){
+        $conn = $this->db->getConnection();
+        $query = "INSERT INTO service (S_user, S_price, S_date_in, S_status, S_operation) 
+                  VALUES (?, ?, ?, 'Przyjęty', ?)";
+
+        $stmt = $conn->prepare($query);
+        $date = date('Y-m-d');
+        $stmt->bind_param("iisi", $userId, $operationId, $date, $operationId);
+        $stmt->execute();
+    }
+    /**
+     * Oznaczenie rekordu serwisowego jako wydany
+     * @param int $serviceId
+     * @return void
+     */
+    public function markServiceAsCompleted($serviceId){
+        $conn = $this->db->getConnection();
+        $query = "UPDATE service SET S_status = 'Wydany', S_date_out = ? WHERE S_id = ?";
+        $stmt = $conn->prepare($query);
+        $date = date('Y-m-d');
+        $stmt->bind_param("si", $date, $serviceId);
+        $stmt->execute();
+    }
+    /**
+     * Pobranie danych o sprzęcie
+     * @return array
+     */
+    public function getEquipmentList(){
+        $conn = $this->db->getConnection();
+        $query = "SELECT E_id, E_producer, E_category, E_price, E_if_rent FROM equipment";
+        $result = $conn->query($query);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    /**
+     * Aktualizacja ceny sprzętu
+     * @param int $equipmentId
+     * @param float $newPrice
+     * @return void
+     */
+    public function updateEquipmentPrice($equipmentId, $newPrice){
+        $conn = $this->db->getConnection();
+        $query = "UPDATE equipment SET E_price = ? WHERE E_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("di", $newPrice, $equipmentId);
+        $stmt->execute();
+    }
 }
 ?>
