@@ -1,0 +1,117 @@
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: auto;
+    flex-direction: row;    
+    width: auto;
+    height: 85vh;
+}
+
+/* Ogólny układ formularza */
+form {
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px;
+    align-items: center;
+    padding: 20px;
+    border-radius: 8px;
+    width: 50%;
+}
+
+/* Nagłówki sekcji */
+.section-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    grid-column: 1 / 3; /* Rozciągnij nagłówek na całą szerokość */
+    text-align: left;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Pola etykiet */
+label {
+    text-align: right;
+    padding-right: 10px;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+/* Pola wejściowe */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+/* Przycisk */
+input[type="submit"] {
+    grid-column: 1 / 3; /* Rozciągnij przycisk na całą szerokość */
+    padding: 10px 20px;
+    font-size: 1em;
+    margin-top: 15px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: center;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Komunikaty */
+.success, .error, .info {
+    font-size: 0.9em;
+    margin-top: 5px;
+    grid-column: 1 / 3; /* Komunikaty na całą szerokość */
+    text-align: center;
+}
+
+.success {
+    color: green;
+}
+
+.error {
+    color: red;
+}
+
+.line{
+    display: block;
+    width: 0.1em;
+    height: 70%;
+    background-color: #344966;
+    margin: 10px;
+    padding: auto;
+}
+
+h1 #history-order{
+    font-family: 'JainiPurva', sans-serif;;
+    font-size: 3em;
+    color: #344966;
+}
+.go_to{
+    width: 20vw;
+    height: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5vh;
+    margin-top: 20px;
+    border-radius: 8px;
+    background-color: #344966;
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+}
