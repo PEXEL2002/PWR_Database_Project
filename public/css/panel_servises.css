@@ -12,6 +12,8 @@ main {
     background: #F0F4EF;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 40px;
 }
 

@@ -48,7 +48,12 @@ if (isset($_POST['oldPassword']) && isset($_POST['newPassword']) && isset($_POST
         $messages['password'] = '<p class="error">Stare hasło jest niepoprawne</p>';
     }
 }
+
+// Pobranie historii zamówień użytkownika
+$userId = $_SESSION['user']->getId();
+$orders = $_SESSION['user']->getTransactionHistory();
 ?>
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -59,31 +64,26 @@ if (isset($_POST['oldPassword']) && isset($_POST['newPassword']) && isset($_POST
     <link rel="stylesheet" href="css/userInfo.css">
 </head>
 <body>
-    <?php
-        include __DIR__ . '/menu.php';
-    ?>
+    <?php include __DIR__ . '/menu.php'; ?>
     <main>
         <section id='about_user'>
             <form action="userInfo.php" method="post">
-                <!-- Sekcja "O mnie" -->
                 <h3 class="section-title">O mnie:</h3>
 
                 <label for="name">Imię:</label>
-                <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($infoUser['name']); ?>">
-                <?php echo $messages['name']; ?>
+                <input type="text" name="name" id="name" value="<?= htmlspecialchars($infoUser['name']); ?>">
+                <?= $messages['name']; ?>
 
                 <label for="surname">Nazwisko:</label>
-                <input type="text" name="surname" id="surname" value="<?php echo htmlspecialchars($infoUser['surname']); ?>">
-                <?php echo $messages['surname']; ?>
+                <input type="text" name="surname" id="surname" value="<?= htmlspecialchars($infoUser['surname']); ?>">
+                <?= $messages['surname']; ?>
 
                 <label for="email">Email:</label>
-                <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($infoUser['email']); ?>">
-                <?php echo $messages['email']; ?>
+                <input type="email" name="email" id="email" value="<?= htmlspecialchars($infoUser['email']); ?>">
+                <?= $messages['email']; ?>
 
-                <!-- Przycisk zapisu zmian -->
                 <input type="submit" value="Zapisz zmiany">
 
-                <!-- Sekcja "Zmiana hasła" -->
                 <h3 class="section-title">Zmiana hasła:</h3>
 
                 <label for="oldPassword">Stare hasło:</label>
@@ -94,9 +94,8 @@ if (isset($_POST['oldPassword']) && isset($_POST['newPassword']) && isset($_POST
 
                 <label for="newPassword2">Powtórz nowe hasło:</label>
                 <input type="password" name="newPassword2" id="newPassword2">
-                <?php echo $messages['password']; ?>
+                <?= $messages['password']; ?>
 
-                <!-- Przycisk zmiany hasła -->
                 <input type="submit" value="Zmień hasło">
             </form>
         </section>
@@ -104,10 +103,32 @@ if (isset($_POST['oldPassword']) && isset($_POST['newPassword']) && isset($_POST
         <section id='history-order'>
             <h1>Historia zamówień </h1>
             <div class='order-items'>
-                do zrobienia po panelu admina
+                <?php if (!empty($orders)): ?>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data Wypożyczenia</th>
+                                <th>Data Zwrotu</th>
+                                <th>Cena (PLN)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($orders as $order): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($order['R_date_rental'], ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td><?= htmlspecialchars($order['R_date_submission'] ?? 'W trakcie', ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td><?= htmlspecialchars($order['R_price'], ENT_QUOTES, 'UTF-8') ?> PLN</td>
+                                    <td><?= $order['R_date_submission'] ? 'Zakończona' : 'W trakcie' ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <p>Brak zamówień do wyświetlenia.</p>
+                <?php endif; ?>
             </div>
         </section>
-
     </main>
 </body>
 </html>

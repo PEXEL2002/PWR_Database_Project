@@ -20,15 +20,15 @@
                         echo "<li><a href='adminPanel.php'>Panel administratora</a></li>";
                     }else{
                         echo '<li><a href="#">Nasz Sprzęt</a></li>';
-                        echo '<li><a href="#">Seris</a></li>';
+                        echo '<li><a href="servises.php">Seris</a></li>';
                         echo '<li><a href="conctact.php">Kontakt</a></li>';
                         echo "<li><a href='userInfo.php'>Informacje o koncie</a></li>";
                     }
                     echo "<li><a href='logout.php'>Wyloguj</a></li>";
                 } else {
                     echo '<li><a href="#">Nasz Sprzęt</a></li>';
-                    echo '<li><a href="#">Seris</a></li>';
-                    echo '<li><a href="#">Kontakt</a></li>';
+                    echo '<li><a href="servises.php">Seris</a></li>';
+                    echo '<li><a href="conctact.php">Kontakt</a></li>';
                     echo "<li><a href='login.php'>Zaloguj</a></li>";
                 }
             ?>

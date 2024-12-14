@@ -143,5 +143,18 @@ class User {
         // Execute the query
         return $stmt->execute();
     }
+    public function getTransactionHistory() {
+        $conn = $this->db->getConnection();
+        $query = "SELECT R_date_rental, R_date_submission, R_price
+                  FROM rent
+                  WHERE R_user_id = ?";
+        $stmt = $conn->prepare($query);
+        $userId = $this->getId();
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    
 }
 ?>
