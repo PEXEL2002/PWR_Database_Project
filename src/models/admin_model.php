@@ -354,7 +354,35 @@ class Admin extends User{
         $row = $result->fetch_assoc();
         return $row ? $row['E_if_rent'] : null;
     }
-    
+    // Funkcja pobierająca wszystkie transakcje
+// Funkcja pobierająca wszystkie transakcje
+public function getAllTransactions() {
+    $conn = $this->db->getConnection();
+
+    $query = "SELECT 
+                u.U_name, 
+                u.U_surname, 
+                u.U_mail, 
+                r.R_date_rental, 
+                r.R_date_submission, 
+                CASE 
+                    WHEN r.R_date_submission IS NULL THEN 'W trakcie'
+                    ELSE 'Zakończona'
+                END AS R_status
+              FROM rent r
+              JOIN users u ON r.R_user_id = u.U_id
+              ORDER BY r.R_date_rental DESC";
+
+    $result = $conn->query($query);
+
+    if (!$result) {
+        throw new Exception("Błąd pobierania transakcji: " . $conn->error);
+    }
+
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+
     
 }  
 ?>

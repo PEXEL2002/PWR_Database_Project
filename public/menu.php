@@ -13,18 +13,22 @@
             <img src="/public/assets/icons/x.png" class="icon" alt="Close">
         </div>
         <ul>
-            <li><a href="#">Nasz Sprzęt</a></li>
-            <li><a href="#">Seris</a></li>
-            <li><a href="#">Kontakt</a></li>
+
             <?php
                 if (isset($_SESSION['user'])) {
                     if($_SESSION['user']->getRole() == 1) {
                         echo "<li><a href='adminPanel.php'>Panel administratora</a></li>";
                     }else{
+                        echo '<li><a href="#">Nasz Sprzęt</a></li>';
+                        echo '<li><a href="#">Seris</a></li>';
+                        echo '<li><a href="#">Kontakt</a></li>';
                         echo "<li><a href='userInfo.php'>Informacje o koncie</a></li>";
                     }
                     echo "<li><a href='logout.php'>Wyloguj</a></li>";
                 } else {
+                    echo '<li><a href="#">Nasz Sprzęt</a></li>';
+                    echo '<li><a href="#">Seris</a></li>';
+                    echo '<li><a href="#">Kontakt</a></li>';
                     echo "<li><a href='login.php'>Zaloguj</a></li>";
                 }
             ?>
