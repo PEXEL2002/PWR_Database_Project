@@ -24,6 +24,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_equipment'])) {
     }
 }
 
+// Obsługa usuwania sprzętu
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_equipment'])) {
+    $E_id = $_POST['E_id'];
+    $E_status = $admin->getEquipmentStatus($E_id);
+
+    if ($E_status === 'Dostępny') {
+        $admin->deleteEquipment($E_id);
+        $_SESSION['messages'][] = "Sprzęt został usunięty.";
+    } else {
+        $_SESSION['messages'][] = "Sprzęt można usunąć tylko, jeśli jest dostępny.";
+    }
+}
+
 // Pobranie wszystkich rekordów sprzętu
 $equipmentList = $admin->getEquipmentByStatus('all');
 ?>
@@ -60,18 +73,16 @@ $equipmentList = $admin->getEquipmentByStatus('all');
 <?php include __DIR__ . '/menu.php'; ?>
 <main>
     <h1>Panel Zarządzania Sprzętem</h1>
-
-    <?php if (isset($_SESSION['messages'])): ?>
-        <div class="messages">
-            <?php foreach ($_SESSION['messages'] as $message): ?>
-                <p><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></p>
-            <?php endforeach; ?>
-            <?php unset($_SESSION['messages']); ?>
-        </div>
-    <?php endif; ?>
-
     <section>
         <h2>Lista Sprzętu</h2>
+        <?php if (isset($_SESSION['messages'])): ?>
+            <div class="messages">
+                <?php foreach ($_SESSION['messages'] as $message): ?>
+                    <p><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></p>
+                <?php endforeach; ?>
+                <?php unset($_SESSION['messages']); ?>
+            </div>
+        <?php endif; ?>
         <label for="equipmentStatus">Wybierz status sprzętu:</label>
         <select id="equipmentStatus">
             <option value="all">Wszystko</option>
@@ -142,7 +153,14 @@ $equipmentList = $admin->getEquipmentByStatus('all');
                         <img src="assets/equipmentPhoto/<?= htmlspecialchars($equipment['E_photo'], ENT_QUOTES, 'UTF-8') ?>" 
                              alt="Zdjęcie sprzętu" width="100">
                     </td>
-                    <td>-</td>
+                    <td>
+                        <?php if ($equipment['E_if_rent'] === 'Dostępny'): ?>
+                        <form method="post" action="panel_equipment.php">
+                            <input type="hidden" name="E_id" value="<?= $equipment['E_id'] ?>">
+                            <button type="submit" name="delete_equipment">Usuń</button>
+                        </form>
+                        <?php endif; ?>
+                    </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

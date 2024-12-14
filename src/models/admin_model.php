@@ -344,6 +344,16 @@ class Admin extends User{
     
         return $row ? $row['RP_price_of_eq'] : null;
     }
+    public function getEquipmentStatus($E_id) {
+        $conn = $this->db->getConnection();
+        $query = "SELECT E_if_rent FROM equipment WHERE E_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $E_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row ? $row['E_if_rent'] : null;
+    }
     
     
 }  
