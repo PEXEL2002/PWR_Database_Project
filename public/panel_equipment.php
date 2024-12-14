@@ -44,14 +44,14 @@ $equipmentList = $admin->getEquipmentByStatus('all');
             // Filtrowanie sprzętu za pomocą JS
             filterSelect.addEventListener('change', function() {
                 const selectedStatus = filterSelect.value;
-                const rows = equipmentTableBody.getElementsByTagName('tr');
+                const rows = equipmentTableBody.querySelectorAll('tr.equipment-row');
 
-                for (let row of rows) {
-                    const statusCell = row.getElementsByClassName('status-cell')[0];
-                    row.style.display = (selectedStatus === 'all' || statusCell.textContent === selectedStatus) 
+                rows.forEach(row => {
+                    const statusCell = row.querySelector('.status-cell').textContent.trim();
+                    row.style.display = (selectedStatus === 'all' || statusCell === selectedStatus) 
                         ? '' 
                         : 'none';
-                }
+                });
             });
         });
     </script>
@@ -132,13 +132,16 @@ $equipmentList = $admin->getEquipmentByStatus('all');
 
                 <!-- Wyświetlanie istniejącego sprzętu -->
                 <?php foreach ($equipmentList as $equipment): ?>
-                <tr>
+                <tr class="equipment-row">
                     <td><?= htmlspecialchars($equipment['B_name'], ENT_QUOTES, 'UTF-8') ?></td>
                     <td><?= htmlspecialchars($equipment['C_Name'], ENT_QUOTES, 'UTF-8') ?></td>
                     <td><?= htmlspecialchars($equipment['E_size'], ENT_QUOTES, 'UTF-8') ?></td>
                     <td><?= htmlspecialchars($equipment['E_price'], ENT_QUOTES, 'UTF-8') ?> PLN</td>
                     <td class="status-cell"><?= htmlspecialchars($equipment['E_if_rent'], ENT_QUOTES, 'UTF-8') ?></td>
-                    <td><img src="assets/equipmentPhoto/<?= htmlspecialchars($equipment['E_photo'], ENT_QUOTES, 'UTF-8') ?>" alt="Zdjęcie sprzętu" width="100"></td>
+                    <td>
+                        <img src="assets/equipmentPhoto/<?= htmlspecialchars($equipment['E_photo'], ENT_QUOTES, 'UTF-8') ?>" 
+                             alt="Zdjęcie sprzętu" width="100">
+                    </td>
                     <td>-</td>
                 </tr>
                 <?php endforeach; ?>
