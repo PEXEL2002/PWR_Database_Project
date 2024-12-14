@@ -1,0 +1,44 @@
+/* Stylizacja dla strony kontaktowej */
+
+main {
+    background: url('../assets/user_background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    padding: 50px;
+    color: white;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#contact-info {
+    color: black;
+    background: #E0EEA5;
+    opacity: 0.8;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 0 auto;
+    z-index: 1;
+}
+
+#contact-info ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#contact-info li {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+#contact-info strong {
+    font-weight: bold;
+    color: #ffdd57;
+}
