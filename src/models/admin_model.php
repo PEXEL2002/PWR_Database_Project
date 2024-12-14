@@ -220,10 +220,8 @@ class Admin extends User{
         $business = $result->fetch_assoc();
     
         if ($business && file_exists(__DIR__ . "/../../assets/businessPhoto/" . $business['B_photo'])) {
-            unlink(__DIR__ . "/../../assets/businessPhoto/" . $business['B_photo']); // Usuń zdjęcie
+            unlink(__DIR__ . "/../../assets/businessPhoto/" . $business['B_photo']);
         }
-    
-        // Usuń firmę z bazy danych
         $query = "DELETE FROM business WHERE B_id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $id);
@@ -256,6 +254,97 @@ class Admin extends User{
         $row = $result->fetch_assoc();
         return $row['count'] == 0;
     }
+    public function addEquipment($producer, $category, $size, $price, $status, $photo) {
+        $conn = $this->db->getConnection();
     
-}
+        // Upewnij się, że status należy do dozwolonych wartości ENUM
+        $validStatuses = ['Dostępny', 'Wynajęty', 'Zarezerwowany'];
+        if (!in_array($status, $validStatuses, true)) {
+            throw new Exception("Nieprawidłowy status sprzętu.");
+        }
+    
+        $query = "INSERT INTO equipment (E_producer, E_category, E_size, E_price, E_if_rent, E_photo) 
+                  VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($query);
+        if (!$stmt) {
+            throw new Exception("Błąd przygotowania zapytania: " . $conn->error);
+        }
+    
+        // Poprawienie typu `status` na `s` (string)
+        $stmt->bind_param("iidsss", $producer, $category, $size, $price, $status, $photo);
+        $stmt->execute();
+    }
+    
+    
+    
+    public function deleteEquipment($equipmentId) {
+        $conn = $this->db->getConnection();
+        $query = "DELETE FROM equipment WHERE E_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $equipmentId);
+        $stmt->execute();
+    }
+    public function getProducers() {
+        $conn = $this->db->getConnection();
+        $query = "SELECT B_id, B_name FROM business";
+        $result = $conn->query($query);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    public function getCategories() {
+        $conn = $this->db->getConnection();
+        $query = "SELECT C_id, C_Name FROM category";
+        $result = $conn->query($query);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    public function getEquipmentByStatus($status) {
+        $conn = $this->db->getConnection();
+    
+        $query = "SELECT e.E_id, b.B_name, c.C_Name, e.E_size, e.E_price, e.E_if_rent, e.E_photo 
+                  FROM equipment e
+                  JOIN business b ON e.E_producer = b.B_id
+                  JOIN category c ON e.E_category = c.C_id";
+    
+        if ($status !== 'all') {
+            $query .= " WHERE e.E_if_rent = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("s", $status);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        } else {
+            $result = $conn->query($query);
+        }
+    
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    public function getAllEquipmentPrices() {
+        $conn = $this->db->getConnection();
+        $query = "SELECT RP_category, RP_price_of_eq FROM rent_price";
+        $result = $conn->query($query);
+    
+        $prices = [];
+        while ($row = $result->fetch_assoc()) {
+            $prices[$row['RP_category']] = $row['RP_price_of_eq'];
+        }
+    
+        return $prices;
+    }
+    public function getEquipmentPrice($categoryId) {
+        $conn = $this->db->getConnection();
+    
+        $query = "SELECT RP_price_of_eq FROM rent_price WHERE RP_category = ?";
+        $stmt = $conn->prepare($query);
+        if (!$stmt) {
+            throw new Exception("Błąd przygotowania zapytania: " . $conn->error);
+        }
+    
+        $stmt->bind_param("i", $categoryId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+    
+        return $row ? $row['RP_price_of_eq'] : null;
+    }
+    
+    
+}  
 ?>
