@@ -6,49 +6,47 @@
         </div>
     </a>
     <div id="content">
-        <img src="/public/assets/icons/hamburger-menu.png" class="icon" alt="">
+        <img src="/public/assets/icons/hamburger-menu.png" class="icon" alt="Menu">
     </div>
-    <aside id="side-menu" class>
+    <aside id="side-menu">
         <div id="close">
-            <img src="/public/assets/icons/x.png" class="icon" alt="Close">
+            <img src="/public/assets/icons/x.png" class="icon" alt="Zamknij">
         </div>
         <ul>
-
-            <?php
-                if (isset($_SESSION['user'])) {
-                    if($_SESSION['user']->getRole() == 1) {
-                        echo "<li><a href='adminPanel.php'>Panel administratora</a></li>";
-                    }else{
-                        echo '<li><a href="#">Nasz Sprzęt</a></li>';
-                        echo '<li><a href="servises.php">Seris</a></li>';
-                        echo '<li><a href="conctact.php">Kontakt</a></li>';
-                        echo "<li><a href='userInfo.php'>Informacje o koncie</a></li>";
-                    }
-                    echo "<li><a href='logout.php'>Wyloguj</a></li>";
-                } else {
-                    echo '<li><a href="#">Nasz Sprzęt</a></li>';
-                    echo '<li><a href="servises.php">Seris</a></li>';
-                    echo '<li><a href="conctact.php">Kontakt</a></li>';
-                    echo "<li><a href='login.php'>Zaloguj</a></li>";
-                }
-            ?>
+            <?php if (isset($_SESSION['user'])): ?>
+                <?php if ($_SESSION['user']->getRole() == 1): ?>
+                    <li><a href="adminPanel.php">Panel administratora</a></li>
+                <?php else: ?>
+                    <li><a href="equipment.php">Nasz Sprzęt</a></li>
+                    <li><a href="servises.php">Serwis</a></li>
+                    <li><a href="conctact.php">Kontakt</a></li>
+                    <li><a href="userInfo.php">Informacje o koncie</a></li>
+                <?php endif; ?>
+                <li><a href="logout.php">Wyloguj</a></li>
+            <?php else: ?>
+                <li><a href="equipment.php">Nasz Sprzęt</a></li>
+                <li><a href="servises.php">Serwis</a></li>
+                <li><a href="conctact.php">Kontakt</a></li>
+                <li><a href="login.php">Zaloguj</a></li>
+            <?php endif; ?>
         </ul>
-    </aside>  
+    </aside>
 </nav>
+
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const sideMenu = document.getElementById("side-menu");
-        const hamburgerMenu = document.querySelector("#content .icon"); // Ikona hamburgera
-        const closeButton = document.querySelector("#close .icon"); // Ikona zamykania
+        const hamburgerMenu = document.querySelector("#content .icon");
+        const closeButton = document.querySelector("#close .icon");
 
-        // Obsługa kliknięcia na ikonę hamburgera
+        // Show side menu
         hamburgerMenu.addEventListener("click", () => {
-            sideMenu.classList.add("active"); // Dodaj klasę "active" do <aside>
+            sideMenu.classList.add("active");
         });
 
-        // Obsługa kliknięcia na ikonę zamykania
+        // Close side menu
         closeButton.addEventListener("click", () => {
-            sideMenu.classList.remove("active"); // Usuń klasę "active" z <aside>
+            sideMenu.classList.remove("active");
         });
     });
 </script>
