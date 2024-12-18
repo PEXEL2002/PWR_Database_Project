@@ -40,7 +40,7 @@ class Equipment {
         return $this->db->insert_id; // Return the ID of the newly created rental
     }
     public function rentEquipment($equipmentId) {
-        $query = "UPDATE equipment SET E_if_rent = 'Wynajęty' WHERE E_id = ? AND E_if_rent = 'Dostępny'";
+        $query = "UPDATE equipment SET E_if_rent = 'Zarezerwowany' WHERE E_id = ? AND E_if_rent = 'Dostępny'";
         $stmt = $this->db->prepare($query);
         $stmt->bind_param('i', $equipmentId);
         $stmt->execute();
