@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../src/models/user_model.php';
+session_start();
 require_once __DIR__ . '/../src/DBConect.php';
 
 $db = new Database();
