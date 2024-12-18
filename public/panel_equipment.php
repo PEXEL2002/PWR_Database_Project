@@ -150,7 +150,7 @@ $equipmentList = $admin->getEquipmentByStatus('all');
                     <td><?= htmlspecialchars($equipment['E_price'], ENT_QUOTES, 'UTF-8') ?> PLN</td>
                     <td class="status-cell"><?= htmlspecialchars($equipment['E_if_rent'], ENT_QUOTES, 'UTF-8') ?></td>
                     <td>
-                        <img src="assets/equipmentPhoto/<?= htmlspecialchars($equipment['E_photo'], ENT_QUOTES, 'UTF-8') ?>" 
+                        <img style="height:100px; width:auto;" src="assets/equipmentPhoto/<?= htmlspecialchars($equipment['E_photo'], ENT_QUOTES, 'UTF-8') ?>" 
                              alt="Zdjęcie sprzętu" width="100">
                     </td>
                     <td>
