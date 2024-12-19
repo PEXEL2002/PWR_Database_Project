@@ -44,7 +44,6 @@ session_start(); ?>
                   <input class="bnt" type="submit" name="" value="Zaloguj">
                   </div>
                   <div class="register-link">
-                    <a href="#">Nie pamiętasz hasła? (Będzie jak zrobie resztę)</a>
                     <p>Nie masz konta? <a href="register.php">Zarejestruj się</a></p>
                   </div>
               </form>
