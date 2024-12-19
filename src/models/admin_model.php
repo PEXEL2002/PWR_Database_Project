@@ -195,7 +195,6 @@ class Admin extends User{
     }
     public function editBusiness($id, $name, $contact, $nip, $photoPath = null) {
         $conn = $this->db->getConnection();
-    
         if ($photoPath) {
             $query = "UPDATE business SET B_name = ?, B_contact = ?, B_nip = ?, B_photo = ? WHERE B_id = ?";
             $stmt = $conn->prepare($query);
@@ -210,7 +209,6 @@ class Admin extends User{
     }
     public function deleteBusiness($id) {
         $conn = $this->db->getConnection();
-    
         // Pobierz ścieżkę do zdjęcia
         $query = "SELECT B_photo FROM business WHERE B_id = ?";
         $stmt = $conn->prepare($query);
@@ -256,7 +254,6 @@ class Admin extends User{
     }
     public function addEquipment($producer, $category, $size, $price, $status, $photo) {
         $conn = $this->db->getConnection();
-    
         // Upewnij się, że status należy do dozwolonych wartości ENUM
         $validStatuses = ['Dostępny', 'Wynajęty', 'Zarezerwowany'];
         if (!in_array($status, $validStatuses, true)) {
@@ -269,8 +266,6 @@ class Admin extends User{
         if (!$stmt) {
             throw new Exception("Błąd przygotowania zapytania: " . $conn->error);
         }
-    
-        // Poprawienie typu `status` na `s` (string)
         $stmt->bind_param("iidsss", $producer, $category, $size, $price, $status, $photo);
         $stmt->execute();
     }
@@ -354,24 +349,44 @@ class Admin extends User{
         $row = $result->fetch_assoc();
         return $row ? $row['E_if_rent'] : null;
     }
-    // Funkcja pobierająca wszystkie transakcje
-// Funkcja pobierająca wszystkie transakcje
+    public function getEquipmentStatusByRentId($rentId) {
+        $conn = $this->db->getConnection();
+        $query = "
+            SELECT e.E_if_rent
+            FROM entire_order eo
+            JOIN equipment e ON eo.EO_eq_id = e.E_id
+            WHERE eo.EO_rent_id = ?
+            LIMIT 1
+        ";
+
+        // Przygotowanie zapytania
+        $stmt = $conn->prepare($query);
+        if (!$stmt) {
+            throw new Exception("Błąd przygotowania zapytania: " . $conn->error);
+        }
+
+        // Powiązanie parametru rentId
+        $stmt->bind_param('i', $rentId);
+
+        // Wykonanie zapytania
+        $stmt->execute();
+
+        // Pobranie wyniku
+        $result = $stmt->get_result();
+        if ($result && $row = $result->fetch_assoc()) {
+            return $row['E_if_rent'];
+        } else {
+            return 'Nieznany'; // Lub inny odpowiedni komunikat w przypadku braku wyników
+        }
+    }
 public function getAllTransactions() {
     $conn = $this->db->getConnection();
 
-    $query = "SELECT 
-                u.U_name, 
-                u.U_surname, 
-                u.U_mail, 
-                r.R_date_rental, 
-                r.R_date_submission, 
-                CASE 
-                    WHEN r.R_date_submission IS NULL THEN 'W trakcie'
-                    ELSE 'Zakończona'
-                END AS R_status
-              FROM rent r
-              JOIN users u ON r.R_user_id = u.U_id
-              ORDER BY r.R_date_rental DESC";
+    $query = "SELECT r.R_id, u.U_name, u.U_surname, u.U_mail, r.R_date_rental, r.R_date_submission
+    FROM rent r
+    JOIN users u ON r.R_user_id = u.U_id
+    WHERE r.R_is_completed = 0
+    ORDER BY r.R_date_rental DESC";
 
     $result = $conn->query($query);
 
@@ -381,8 +396,83 @@ public function getAllTransactions() {
 
     return $result->fetch_all(MYSQLI_ASSOC);
 }
+public function issueEquipment($rentId) {
+    $conn = $this->db->getConnection();
+    $equipment = new Equipment();
 
+    // Pobierz identyfikatory sprzętu powiązane z wypożyczeniem
+    $query = "SELECT EO_eq_id FROM entire_order WHERE EO_rent_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $rentId);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    
+    // Sprawdź, czy zapytanie zwróciło wyniki
+    if ($result === false) {
+        return ['success' => false, 'message' => 'Błąd podczas pobierania danych.'];
+    }
+
+    // Pobierz wszystkie identyfikatory sprzętu
+    $equipmentIds = $result->fetch_all(MYSQLI_NUM);
+
+    // Sprawdź, czy znaleziono jakiekolwiek identyfikatory
+    if (empty($equipmentIds)) {
+        return ['success' => false, 'message' => 'Nie znaleziono sprzętu dla podanego ID wypożyczenia.'];
+    }
+
+    // Iteruj przez identyfikatory i aktualizuj status
+    foreach ($equipmentIds as $equipmentIdArray) {
+        $equipmentId = $equipmentIdArray[0]; // Pobierz pierwszy element z tablicy
+        $equipment->updateEquipmentStatus($equipmentId, 'Wynajęty');
+    }
+
+    return ['success' => true, 'message' => 'Sprzęt został pomyślnie wydany.'];
+}
+
+public function acceptReturn($rentId) {
+    $conn = $this->db->getConnection();
+    $equipment = new Equipment();
+
+    // Pobierz informacje o wypożyczeniu
+    $query = "SELECT R_date_rental, R_price FROM rent WHERE R_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $rentId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $rent = $result->fetch_assoc();
+
+    if (!$rent) {
+        return ['success' => false, 'message' => 'Nie znaleziono wypożyczenia o podanym ID.'];
+    }
+
+    // Oblicz całkowity koszt wypożyczenia
+    $dateRental = new DateTime($rent['R_date_rental']);
+    $dateNow = new DateTime();
+    $interval = $dateRental->diff($dateNow);
+    $daysRented = $interval->days;
+    $totalCost = $daysRented * $rent['R_price'];
+
+    // Zaktualizuj datę zwrotu w tabeli 'rent'
+    $query = "UPDATE rent SET R_is_completed = 1, R_date_submission = NOW() WHERE R_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $rentId);
+    $stmt->execute();
+
+    // Pobierz identyfikatory sprzętu powiązane z wypożyczeniem
+    $query = "SELECT EO_eq_id FROM entire_order WHERE EO_rent_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $rentId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $equipmentIds = $result->fetch_all(MYSQLI_ASSOC);
+
+    // Zaktualizuj status każdego sprzętu na 'Dostępny'
+    foreach ($equipmentIds as $equipmentItem) {
+        $equipment->updateEquipmentStatus($equipmentItem['EO_eq_id'], 'Dostępny');
+    }
+
+    return ['success' => true, 'message' => 'Sprzęt został pomyślnie zwrócony.', 'total_cost' => $totalCost];
+}
+
 }  
 ?>

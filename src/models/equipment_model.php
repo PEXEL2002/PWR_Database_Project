@@ -19,8 +19,12 @@ class Equipment {
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Aktualizuje status sprzętu
     public function updateEquipmentStatus($equipmentId, $status) {
+        $allowedStatuses = ['Dostępny','Wynajęty','Zarezerwowany'];
+        if (!in_array($status, $allowedStatuses)) {
+            throw new InvalidArgumentException("Nieprawidłowy status: $status");
+        }
+    
         $query = "UPDATE equipment SET E_if_rent = ? WHERE E_id = ?";
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("si", $status, $equipmentId);
@@ -33,7 +37,7 @@ class Equipment {
         $stmt->execute();
     }
     public function createRental($userId, $totalPrice, $rentalDate) {
-        $query = 'INSERT INTO rent (R_user_id, R_price, R_date_rental) VALUES (?, ?, ?)';
+        $query = "INSERT INTO rent (R_user_id, R_price, R_date_rental, R_is_completed) VALUES (?, ?, ?, 0)";
         $stmt = $this->db->prepare($query);
         $stmt->bind_param('ids', $userId, $totalPrice, $rentalDate);
         $stmt->execute();
