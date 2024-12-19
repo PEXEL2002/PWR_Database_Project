@@ -1,30 +1,62 @@
-body{
+body {
     margin: 0;
     padding: 0;
     background: url('../assets/user_background.jpg') no-repeat center center fixed;
     background-size: cover;
 }
-main{
-    display: flex;
-    flex-direction: column;
-}
-#equipment-container{
+
+main {
     display: flex;
     flex-wrap: wrap;
-    width: auto;
-    height: auto;
     justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+#equipment-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
     padding: 20px;
     margin: 20px;
     background-color: rgba(224, 238, 165, 0.8);
     border-radius: 10px;
+    max-width: 1200px;
 }
 
-.equipment-card{
+.equipment-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     width: 300px;
     margin: 10px;
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     background-color: #fff;
+}
+.equipment-card img {
+    max-height: 150px;
+    width: auto; 
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+form input[type="submit"] {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form input[type="submit"]:hover {
+    background-color: #45a049;
 }

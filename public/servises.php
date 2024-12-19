@@ -21,7 +21,8 @@ if ($result) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Prices</title>
+    <title>Serwis</title>
+    <link rel="icon" type="image/x-icon" href="assets/logo.ico">
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/prices.css">
 </head>

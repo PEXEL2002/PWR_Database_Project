@@ -8,6 +8,8 @@ body {
     padding: 0;
     background: #F0F4EF;
     color: #333;
+    background: url('../assets/user_background.jpg') no-repeat center center fixed;
+    background-size: cover;
 }
 
 main {

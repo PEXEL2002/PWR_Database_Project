@@ -35,6 +35,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aktualności</title>
+    <link rel="icon" type="image/x-icon" href="assets/logo.ico">
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/main.css">
 </head>
