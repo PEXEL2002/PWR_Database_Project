@@ -9,7 +9,6 @@ if (!isset($_SESSION['user'])) {
     
 } else {
     $role = $_SESSION['user']->getRole();
-    echo "Witaj ";
 }
 
 $db = new Database();
@@ -25,14 +24,22 @@ $equipmentList = $eq->getAllEquipment();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wybierz Sprzęt</title>
+    <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/equipment.css">
 </head>
 <body>
+    <?php
+        include __DIR__ . '/menu.php';
+    ?>
     <div id="equipment-container">
+    <?php if ($role === -1): ?>
+            <p>Aby wypożyczyć sprzęt, proszę się <a href="login.php">zalogować</a>.</p>
+    <?php endif; ?>
+        <h1>Nasz sprzęt:</h1>
         <form id="equipmentForm" action="rent.php" method="post">
+        <input type="submit" value="Wypożycz wybrany sprzęt" <?= $role === -1 ? 'disabled' : '' ?>>
             <?php foreach ($equipmentList as $equipment): ?>
                 <div class="equipment-card">
-                    <p><strong>ID:</strong> <?= htmlspecialchars($equipment['E_id']) ?></p>
                     <p><strong>Cena:</strong> <?= htmlspecialchars($equipment['E_price']) ?> PLN</p>
                     <p><strong>Status:</strong> <?= $equipment['E_if_rent'] === '0' ? 'Dostępny' : 'Wypożyczony' ?></p>
                     <?php if ($equipment['E_if_rent'] === 'Dostępny' && $role !== -1): ?>
@@ -45,13 +52,9 @@ $equipmentList = $eq->getAllEquipment();
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
-            <input type="submit" value="Wypożycz wybrany sprzęt" <?= $role === -1 ? 'disabled' : '' ?>>
         </form>
-        <?php if ($role === -1): ?>
-            <p>Aby wypożyczyć sprzęt, proszę się <a href="login.php">zalogować</a>.</p>
-        <?php endif; ?>
+        
     </div>
-
     <script>
     document.getElementById('equipmentForm').addEventListener('submit', function(event) {
         const checkboxes = document.querySelectorAll('input[name="equipment_ids[]"]');
