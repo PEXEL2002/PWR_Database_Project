@@ -109,7 +109,7 @@ $orders = $_SESSION['user']->getTransactionHistory();
                             <tr>
                                 <th>Data Wypożyczenia</th>
                                 <th>Data Zwrotu</th>
-                                <th>Cena (PLN)</th>
+                                <th>Cena za dzień (PLN)</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
